@@ -1,7 +1,4 @@
-/* =============================================
-   FLEX BUDGET v2 — The Pulse
-   Dark, electric, alive.
-   ============================================= */
+/* Flex Budget - style.css */
 
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -35,7 +32,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Screens ─────────────────────────────── */
+/* Screens */
 .screen {
   min-height: 100vh;
   display: none;
@@ -54,7 +51,7 @@ body {
   transform: translateX(-40px);
 }
 
-/* ── Screen Header ───────────────────────── */
+/* Screen Header */
 .screen-header {
   display: flex;
   align-items: center;

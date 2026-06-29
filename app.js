@@ -1,17 +1,13 @@
-// =============================================
-//   FLEX BUDGET v2 — app.js
-// =============================================
+// Flex Budget - app.js
+// Handles screen transitions, income calculation, expense tracking, and charts
 
-// ── State ─────────────────────────────────────
 let expenses = [];
 let safeToSpend = 0;
 let totalIncome = 0;
 let spendingChart = null;
 
-// ── Utils ─────────────────────────────────────
 const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
 const $ = id => document.getElementById(id);
-const qs = sel => document.querySelector(sel);
 
 function showToast(msg) {
   const t = $('toast');
@@ -22,7 +18,7 @@ function showToast(msg) {
   setTimeout(() => { t.classList.add('hidden'); }, 2500);
 }
 
-// ── Screen navigation ─────────────────────────
+// Screen transitions
 function goTo(targetId, fromId) {
   const from = $(fromId);
   const to = $(targetId);
@@ -41,7 +37,7 @@ $('start-btn').addEventListener('click', () => goTo('screen-income', 'screen-lan
 $('back-to-landing').addEventListener('click', () => goTo('screen-landing', 'screen-income'));
 $('back-to-income').addEventListener('click', () => goTo('screen-income', 'screen-dashboard'));
 
-// ── Live income preview ───────────────────────
+// Update the income preview total as the user types
 function updatePreview() {
   const amounts = document.querySelectorAll('.src-amount');
   let total = 0;
@@ -54,7 +50,7 @@ document.addEventListener('input', e => {
   if (e.target.classList.contains('src-amount')) updatePreview();
 });
 
-// ── Add income source ─────────────────────────
+// Add a new income source row
 let sourceCount = 1;
 $('add-source-btn').addEventListener('click', () => {
   sourceCount++;
@@ -73,8 +69,6 @@ $('add-source-btn').addEventListener('click', () => {
   `;
   wrap.appendChild(row);
   row.querySelector('.src-name').focus();
-
-  // Show remove buttons once >1 row
   document.querySelectorAll('.remove-source').forEach(b => b.classList.remove('hidden'));
 });
 
@@ -83,7 +77,6 @@ document.addEventListener('click', e => {
     const row = e.target.closest('.source-row');
     row.remove();
     updatePreview();
-    // Renumber
     document.querySelectorAll('.source-row').forEach((r, i) => {
       r.querySelector('.source-tag').textContent = String(i + 1).padStart(2, '0');
     });
@@ -93,7 +86,7 @@ document.addEventListener('click', e => {
   }
 });
 
-// ── Calculate ─────────────────────────────────
+// Calculate budget and confidence score
 $('calculate-btn').addEventListener('click', () => {
   const amounts = document.querySelectorAll('.src-amount');
   let total = 0;
@@ -106,16 +99,16 @@ $('calculate-btn').addEventListener('click', () => {
   const past2 = parseFloat($('past2').value) || total;
   const pastAvg = (past1 + past2) / 2;
 
-  // Confidence score
+  // Confidence score based on deviation from 3-month average
   const avg3 = (past1 + past2 + total) / 3;
   const deviation = Math.abs(total - avg3) / avg3;
   let confidence = Math.round(100 - deviation * 100);
   confidence = Math.max(8, Math.min(100, confidence));
 
-  // Surge
+  // Surge: income more than 30% above past average
   const isSurge = pastAvg > 0 && total > pastAvg * 1.3;
 
-  // Allocations
+  // Spending allocations scale with income stability
   let spendR, saveR, bufferR;
   if (confidence >= 75) { spendR = 0.70; saveR = 0.20; bufferR = 0.10; }
   else if (confidence >= 45) { spendR = 0.60; saveR = 0.25; bufferR = 0.15; }
@@ -127,7 +120,6 @@ $('calculate-btn').addEventListener('click', () => {
 
   goTo('screen-dashboard', 'screen-income');
 
-  // Animate after transition
   setTimeout(() => {
     animateMeter(confidence);
     animateBars(total, safeToSpend, savings, buffer, spendR, saveR, bufferR);
@@ -138,7 +130,7 @@ $('calculate-btn').addEventListener('click', () => {
   }, 400);
 });
 
-// ── Meter (arc canvas) ────────────────────────
+// Animated arc meter for confidence score
 function animateMeter(target) {
   const canvas = $('meterCanvas');
   const ctx = canvas.getContext('2d');
@@ -153,19 +145,17 @@ function animateMeter(target) {
   else if (target >= 45) color = '#ffab40';
   else color = '#ff4d6d';
 
-  let current = 0;
   const score = $('meter-score');
 
   function draw(val) {
     ctx.clearRect(0, 0, W, H);
-    // Track
     ctx.beginPath();
     ctx.arc(cx, cy, r, startAngle, startAngle + totalArc);
     ctx.strokeStyle = '#1e2330';
     ctx.lineWidth = 12;
     ctx.lineCap = 'round';
     ctx.stroke();
-    // Fill
+
     const fillEnd = startAngle + (totalArc * val / 100);
     ctx.beginPath();
     ctx.arc(cx, cy, r, startAngle, fillEnd);
@@ -181,10 +171,11 @@ function animateMeter(target) {
   draw(0);
   const duration = 1200;
   const start = performance.now();
+
   function tick(now) {
     const t = Math.min((now - start) / duration, 1);
     const ease = 1 - Math.pow(1 - t, 3);
-    current = ease * target;
+    const current = ease * target;
     draw(current);
     score.textContent = Math.round(current);
     if (t < 1) requestAnimationFrame(tick);
@@ -192,7 +183,7 @@ function animateMeter(target) {
   requestAnimationFrame(tick);
 }
 
-// ── Budget bars ───────────────────────────────
+// Animate the budget allocation bars
 function animateBars(total, spend, save, buffer, sr, savr, bufr) {
   $('val-spend').textContent  = fmt(spend);
   $('val-save').textContent   = fmt(save);
@@ -204,10 +195,10 @@ function animateBars(total, spend, save, buffer, sr, savr, bufr) {
   }, 100);
 }
 
-// ── Badges + status ───────────────────────────
+// Set confidence status text and surge/compliance badges
 function updateBadges(confidence, isSurge) {
-  const dot  = $('status-dot');
-  const text = $('status-text');
+  const dot    = $('status-dot');
+  const text   = $('status-text');
   const explain = $('meter-explain');
 
   if (confidence >= 75) {
@@ -229,7 +220,7 @@ function updateBadges(confidence, isSurge) {
     : $('surge-pill').classList.add('hidden');
 }
 
-// ── Expense tracker ───────────────────────────
+// Expense tracking
 $('add-exp-btn').addEventListener('click', addExpense);
 $('exp-amt').addEventListener('keydown', e => { if (e.key === 'Enter') addExpense(); });
 
@@ -271,14 +262,12 @@ function renderExpenses() {
   }
 
   $('total-spent').textContent = fmt(totalSpent);
-  const remEl = $('remaining');
-  remEl.textContent = fmt(Math.abs(remaining));
-  remEl.className = remaining >= 0 ? 'pos' : 'neg';
+
   $('remaining-label').innerHTML = remaining >= 0
     ? `Remaining: <strong id="remaining" class="pos">${fmt(remaining)}</strong>`
     : `Over budget by: <strong id="remaining" class="neg">${fmt(Math.abs(remaining))}</strong>`;
 
-  // Spent progress bar
+  // Progress bar color shifts as you approach the limit
   const pct = safeToSpend > 0 ? Math.min((totalSpent / safeToSpend) * 100, 100) : 0;
   const fill = $('spent-fill');
   fill.style.width = pct + '%';
@@ -295,7 +284,7 @@ function checkCompliance() {
   }
 }
 
-// ── Chart ─────────────────────────────────────
+// Spending breakdown donut chart
 function renderChart() {
   const emptyEl = $('chart-empty');
   const wrapEl  = $('chart-wrap');
@@ -345,7 +334,7 @@ function renderChart() {
   });
 }
 
-// ── Tabs ──────────────────────────────────────
+// Tab switching
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -355,14 +344,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-// ── Restart ───────────────────────────────────
+// Reset everything and go back to landing
 $('restart-btn').addEventListener('click', () => {
   expenses = [];
   safeToSpend = 0;
   totalIncome = 0;
   sourceCount = 1;
 
-  // Reset income form
   $('sources-wrap').innerHTML = `
     <div class="source-row" data-index="0">
       <div class="source-tag">01</div>

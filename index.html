@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlexBudget — Built for income that never looks the same twice</title>
+  <title>FlexBudget</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -11,9 +11,6 @@
 </head>
 <body>
 
-  <!-- ═══════════════════════════════════════
-       SCREEN 1 — LANDING
-  ════════════════════════════════════════ -->
   <div class="screen active" id="screen-landing">
     <div class="landing-inner">
 
@@ -47,9 +44,6 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════
-       SCREEN 2 — INCOME ENTRY
-  ════════════════════════════════════════ -->
   <div class="screen" id="screen-income">
     <div class="screen-header">
       <button class="back-btn" id="back-to-landing">← back</button>
@@ -113,9 +107,6 @@
     </div>
   </div>
 
-  <!-- ═══════════════════════════════════════
-       SCREEN 3 — DASHBOARD
-  ════════════════════════════════════════ -->
   <div class="screen" id="screen-dashboard">
     <div class="screen-header">
       <button class="back-btn" id="back-to-income">← edit income</button>
@@ -124,7 +115,6 @@
 
     <div class="dashboard-inner">
 
-      <!-- Meter + Confidence -->
       <div class="meter-section">
         <div class="meter-wrap">
           <canvas id="meterCanvas" width="220" height="220"></canvas>
@@ -149,7 +139,6 @@
         </div>
       </div>
 
-      <!-- Budget Bars -->
       <div class="budget-bars" id="budget-bars">
         <div class="bar-row" id="bar-spend">
           <div class="bar-meta">
@@ -174,13 +163,11 @@
         </div>
       </div>
 
-      <!-- Tabs -->
       <div class="tabs">
         <button class="tab-btn active" data-tab="tracker">Expense Tracker</button>
         <button class="tab-btn" data-tab="chart">Breakdown</button>
       </div>
 
-      <!-- Tab: Tracker -->
       <div class="tab-panel active" id="tab-tracker">
         <div class="expense-add">
           <input type="text" id="exp-cat" placeholder="Category (e.g. Rent)" />
@@ -206,7 +193,6 @@
         </div>
       </div>
 
-      <!-- Tab: Chart -->
       <div class="tab-panel" id="tab-chart">
         <div class="chart-empty" id="chart-empty">Add expenses to see your breakdown.</div>
         <div class="chart-wrap hidden" id="chart-wrap">
@@ -218,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Toast -->
   <div class="toast hidden" id="toast"></div>
 
   <script src="app.js"></script>

@@ -1,81 +1,48 @@
-# 💸 Flex Budget
+# Flex Budget
 
-**Adaptive budgeting for irregular income earners.**
+A personal finance web app built for people whose income changes every month.
 
-Flex Budget helps freelancers, gig workers, and anyone with variable income make smarter spending decisions — no rigid monthly salary required.
+## Why I built this
 
----
+I'm a college student. My income isn't consistent — some months I pick up freelance work, other months it's slower. Every budgeting app I tried assumed I made the same amount each month, which made them pretty useless for my situation. I wanted something that could adapt based on what I actually earned, not what I was supposed to earn.
 
-## The Problem
+So I built Flex Budget. You enter what you made this month across however many income sources you have, and the app figures out a realistic budget based on how stable or unstable your income has been recently. The less consistent your income, the more conservative the budget it suggests.
 
-Most budgeting tools assume you earn the same amount every month. If your income fluctuates (freelance projects, gig work, seasonal jobs), those tools either don't work or give you misleading advice.
+## What it does
 
-## The Solution
+You start by logging your income for the month — freelance work, part-time job, whatever it is. If you add your earnings from the past two months, the app calculates a confidence score that reflects how predictable your income is. Based on that score, it splits your money into three buckets: what's safe to spend, what you should save, and what you should keep as an emergency buffer.
 
-Flex Budget adapts to *your* income pattern. It analyzes your current month against your recent history and gives you a **confidence score** — a real-time indicator of how stable your income is — then suggests spending and savings allocations accordingly.
+From there you can log expenses by category and watch how your spending tracks against your budget in real time. There's a chart that breaks down where your money is going and a warning system that flags you when your income spikes unusually high — because a good month can trick you into spending more than you should.
 
----
+## Confidence score breakdown
 
-## Features
+The score compares your current month to the previous two. The more your income swings around, the lower the score, and the more conservative the spending recommendation.
 
-| Feature | Description |
-|---|---|
-| 🔢 **Multi-source income** | Log income from multiple streams in one place |
-| 🎯 **Confidence Score** | Rates income stability (Stable / Variable / Irregular) based on recent trends |
-| ⚠️ **Surge Warning** | Alerts you when income is unusually high, so you save before you spend |
-| 🏅 **Compliance Badge** | Visual reward for staying within your safe spending limit |
-| 📊 **Spending Tracker** | Log expenses by category and track them against your budget |
-| 🍩 **Visual Breakdown** | Interactive donut chart showing spending by category |
+- Stable (75-100): 70% spend, 20% save, 10% buffer
+- Variable (45-74): 60% spend, 25% save, 15% buffer  
+- Irregular (0-44): 50% spend, 30% save, 20% buffer
 
----
+## Tech stack
 
-## How the Confidence Score Works
+Built with HTML, CSS, and vanilla JavaScript. No frameworks, no backend. Chart.js handles the spending breakdown visualization. Data persists in localStorage so nothing gets lost on refresh.
 
-Flex Budget compares your current income to the past 2 months:
-
-- **Stable (75–100%)** → 70% spend / 20% save / 10% buffer
-- **Variable (45–74%)** → 60% spend / 25% save / 15% buffer
-- **Irregular (0–44%)** → 50% spend / 30% save / 20% buffer
-
-The more variable your income, the more the app protects you with a larger savings buffer.
-
----
-
-## Tech Stack
-
-- **HTML5** — structure
-- **CSS3** — custom design system with CSS variables
-- **Vanilla JavaScript** — all logic, no frameworks
-- **Chart.js** — interactive donut chart
-- **localStorage** — session persistence
-
----
-
-## Getting Started
-
-No install needed. Just open the file:
+## Running it locally
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/flex-budget.git
-cd flex-budget
-open index.html   # or double-click the file
+git clone https://github.com/KwadwoCod/Flex-budget.git
+cd Flex-budget
+open index.html
 ```
 
----
+No installs, no setup. Just open the file in a browser.
 
-## Project Background
+## What I'd add next
 
-Built as a personal finance tool targeting a gap in budgeting apps for irregular earners. Features were scoped using a value-vs-effort framework, prioritizing behavioral impact over complexity. Early feedback informed the confidence-based logic and surge warning system.
+- Month-by-month history so you can see patterns over time
+- Ability to set spending limits per category
+- Export to CSV for people who also track things in a spreadsheet
+- Mobile app version
 
----
+## Background
 
-## Roadmap
-
-- [ ] Monthly history view
-- [ ] CSV export
-- [ ] Category spending limits
-- [ ] Mobile PWA support
-
----
-
-*Made for the freelancers, the hustle, and the irregular paycheck.*
+This started as a personal problem. I did user research and competitive analysis to confirm other irregular earners felt the same gap, then scoped the MVP around the features that would actually change spending behavior — confidence scoring, surge warnings, and real-time tracking. The goal was never to build another budgeting app. It was to build one that works for people like me.
